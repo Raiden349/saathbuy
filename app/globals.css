@@ -280,5 +280,13 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .admin-request-row h2 { margin: 0; font-family: var(--font-outfit), sans-serif; font-size: 16px; font-weight: 600; }
 .admin-request-row p { margin: 4px 0 0; color: var(--color-ink-soft); font-size: 14px; }
 .admin-request-row > strong { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.deal-alerts { display: grid; gap: 12px; margin-top: 20px; border-top: 1px solid var(--color-line); padding-top: 16px; }
+.deal-alerts strong { font-family: var(--font-outfit), sans-serif; font-weight: 600; }
+.deal-alerts p { margin: 4px 0 0; color: var(--color-ink-soft); }
+.deal-alerts .form-help { margin-top: 8px; }
+.deal-alerts .button-secondary { justify-self: start; }
+.admin-test-push { display: grid; justify-items: start; gap: 8px; }
+.admin-test-push .form-help { margin: 0; }
+button:disabled { opacity: .65; cursor: default; }
 @media (min-width: 768px) { .rewards-main, .request-main { padding: 56px 32px 144px; } }
 @media (min-width: 680px) { .admin-form-grid { grid-template-columns: 1fr 1fr; } .admin-tier-row { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; } .admin-tier-row legend { grid-column: 1 / -1; } }

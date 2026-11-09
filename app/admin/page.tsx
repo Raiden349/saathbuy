@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { saveManualKpisAction } from "@/app/actions/admin";
+import { TestPushButton } from "@/components/test-push-button";
 import { countJoinsThisWeek } from "@/lib/admin-metrics";
 import { createClient } from "@/lib/supabase/server";
 
@@ -54,6 +55,7 @@ export default async function AdminHomePage({ searchParams }: AdminHomeProps) {
         <button className="button-secondary" type="submit">Save figures</button>
       </form>}
     </section>
+    <section className="admin-section"><h2 className="section-title">Deal alerts</h2><TestPushButton /></section>
     <section className="admin-section">
       <div className="admin-heading-row"><h2 className="section-title">Pickup operations</h2><Link href="/admin/deals">All deals</Link></div>
       <p className="admin-intro">Open a delivered deal to scan pickup codes and review joiners.</p>

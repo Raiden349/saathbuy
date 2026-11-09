@@ -46,3 +46,9 @@
 - Keep deal creation and edits behind the existing admin row-level security policies and validate all submitted fields with Zod. The server builds tiers and prices; the browser never submits derived totals.
 - Store wholesale cost in the restricted `deal_costs` table and keep the existing deal slug stable when an admin edits a title.
 - Calculate activity metrics from deal and join rows. Store only the two manually entered counts in a single admin-only `kpi_manual` row.
+
+## Phase 9
+
+- Store browser push subscription details server-side, keyed by endpoint and associated with the signed-in account. Only the user's own Home action creates a subscription.
+- Send weekly deal drops through a CRON_SECRET-protected endpoint and the existing Vercel cron schedule. Remove subscriptions only when the push provider reports 404 or 410.
+- Keep the temporary test push limited to an authenticated admin and that admin's current browser subscription.

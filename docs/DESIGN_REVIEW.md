@@ -54,3 +54,10 @@
 - The KPI dashboard presents label/value rows rather than tiles. The deal editor keeps fields in one column on mobile and uses the required 48 px controls.
 - Deal lists, joiners, and requested products use mint-tint table headers or divided rows with thin token borders.
 - No decorative cards, gradients, shadows, or extra animation were added.
+
+## Deal alerts
+
+- Review: `design-review/alerts-375.png` at 375x812.
+- The Home prompt is a plain text section with one explicit enable action; it requests notification permission only after the student taps the button.
+- iPhone users see the install hint before enabling browser push. The admin test action uses the same secondary button style as other admin controls.
+- No decorative cards, gradients, shadows, or extra animation were added.
