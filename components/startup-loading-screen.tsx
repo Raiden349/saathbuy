@@ -21,6 +21,17 @@ export function StartupLoadingScreen() {
   return (
     <div aria-label="Loading SaathBuy" aria-live="polite" className="startup-loading-screen" role="status">
       <video
+        aria-hidden="true"
+        autoPlay
+        className="startup-loading-backdrop"
+        loop
+        muted
+        playsInline
+        preload="auto"
+        src="/brand/startup-loading.mp4"
+      />
+      <video
+        aria-hidden="true"
         autoPlay
         className="startup-loading-video"
         muted
