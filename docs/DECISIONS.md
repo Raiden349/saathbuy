@@ -21,3 +21,9 @@
 - Read deals through the anon/authenticated Supabase client and close expired deals lazily before Home and detail reads.
 - Only optimize deal images from the configured Supabase project's public Storage path; missing or unsupported URLs stay on the category tile.
 - Render a stable "Deadline" label until the countdown hydrates in the browser to avoid server/client clock mismatches.
+
+## Phase 5
+
+- Keep server-side deal-join RPCs as the only write path for joins and cancellations. The browser submits choices; the SQL function validates balances, quantities, deadlines, wallet references, and final points updates.
+- Keep the 30-day referral ID in an HttpOnly, same-site cookie set only from a valid deal-detail `ref` UUID.
+- Show payment estimates from the active tier, with no external payment processing in v1.

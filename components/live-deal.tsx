@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { cancelJoinAction } from "@/app/actions/deals";
 import { Countdown } from "@/components/countdown";
 import { SlotRow } from "@/components/slot-row";
 import { TierLadder } from "@/components/tier-ladder";
@@ -10,9 +11,9 @@ import { createClient } from "@/lib/supabase/client";
 import { getDealPricing } from "@/lib/pricing";
 import type { DealSummary } from "@/components/deal-card";
 
-type DealDetailData = DealSummary & { pickup_time: string | null; pickup: string | null; pickup_description: string | null };
+type DealDetailData = DealSummary & { pickup_time: string | null; pickup: string | null; pickup_description: string | null; active_join: { id: string; qty: number } | null };
 
-export function LiveDeal({ deal }: { deal: DealDetailData }) {
+export function LiveDeal({ deal, notice }: { deal: DealDetailData; notice?: string }) {
   const [joinerCount, setJoinerCount] = useState(deal.joiner_count);
   const pricing = getDealPricing({
     tiers: deal.tiers,
@@ -43,6 +44,11 @@ export function LiveDeal({ deal }: { deal: DealDetailData }) {
     completed: `Deal confirmed. Everyone pays Rs. ${deal.final_price ?? pricing.currentPrice} each.`,
   };
   const open = deal.status === "open";
+  const noticeCopy: Record<string, string> = {
+    joined: `Joined. You're in. ${deal.active_join?.qty ?? 1} packs.`,
+    cancelled: "Cancelled. Your points are back.",
+    "cancel-failed": "Your spot could not be cancelled. It may have passed the deadline.",
+  };
 
   return (
     <main className="detail-main">
@@ -61,6 +67,16 @@ export function LiveDeal({ deal }: { deal: DealDetailData }) {
       {statusCopy[deal.status]
         ? <p className={`status-message status-${deal.status}`} role="status">{statusCopy[deal.status]}</p>
         : <div className="detail-progress"><SlotRow tiers={deal.tiers} count={joinerCount} initialCount={deal.joiner_count} /><Countdown deadline={deal.deadline} /></div>}
+      {notice && noticeCopy[notice] && <p className="status-message" role="status">{noticeCopy[notice]}</p>}
+      {open && deal.active_join && (
+        <div className="joined-state"><p>You&apos;re in. {deal.active_join.qty} {deal.active_join.qty === 1 ? "pack" : "packs"}.</p>
+          <form action={cancelJoinAction}>
+            <input name="deal_slug" type="hidden" value={deal.slug} />
+            <input name="join_id" type="hidden" value={deal.active_join.id} />
+            <button className="cancel-link" type="submit">Cancel my spot</button>
+          </form>
+        </div>
+      )}
       <section className="detail-section">
         <h2 className="section-title">Group price</h2>
         <TierLadder tiers={deal.tiers} joinerCount={joinerCount} retailPrice={deal.retail_price} />
@@ -71,10 +87,12 @@ export function LiveDeal({ deal }: { deal: DealDetailData }) {
         {deal.pickup_description && <p>{deal.pickup_description}</p>}
         {deal.pickup_time && <p>{new Intl.DateTimeFormat("en-PK", { dateStyle: "full", timeStyle: "short", timeZone: "Asia/Karachi" }).format(new Date(deal.pickup_time))}</p>}
       </section>
-      {open && (
+      {open && !deal.active_join && (
         <div className="detail-sticky-action">
           <div><span className="sticky-price">Rs. {pricing.currentPrice}</span><span className="sticky-caption"> You pay the best price reached at the deadline.</span></div>
-          <Link className="button-primary sticky-join" href={`/deals/${deal.slug}/join`}>Join this deal</Link>
+          <Link className="button-primary sticky-join" href={`/deals/${deal.slug}/join`}>
+            Join this deal
+          </Link>
         </div>
       )}
     </main>

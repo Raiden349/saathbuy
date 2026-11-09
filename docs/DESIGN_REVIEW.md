@@ -24,4 +24,11 @@
 - Deal detail uses the 4:3 supplied product image when it is in the project's public Supabase Storage bucket. Missing or unsupported images use a flat mint-tint category tile.
 - SlotRow is the only animated element. It fills a slot once when the live joiner count increases and respects reduced motion.
 - Price starts at retail until a tier is reached. The tier ladder uses the stored thresholds and prices; closed deals use the database final price.
-- Mobile and desktop screenshots have no horizontal overflow. Remaining deviation: joining is wired to the next phase's route, which Phase 5 implements.
+- Mobile and desktop screenshots have no horizontal overflow.
+
+## Join and pay
+
+- Review: `design-review/join-375.png` at 375x812, captured with sample values in the temporary local-only preview.
+- The page keeps quantity, points, payment method, and a receipt-style total in one column. Wallet reference appears only when Wallet is selected.
+- The estimate updates from the current tier, selected quantity, 100-point redemption blocks, and the student's service-fee credit count. The database function remains authoritative when the form is submitted.
+- No payment gateway is used. Wallet users enter a transaction ID for pickup verification.

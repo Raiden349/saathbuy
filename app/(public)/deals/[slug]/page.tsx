@@ -22,20 +22,34 @@ async function getDeal(slug: string) {
       pickup = pickupData;
     }
 
-    return {
+    let activeJoin: { id: string; qty: number } | null = null;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: join } = await supabase
+        .from("deal_joins")
+        .select("id, qty, status")
+        .eq("deal_id", data.id)
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (join?.status === "joined") activeJoin = { id: join.id, qty: join.qty };
+    }
+
+    const deal = {
       ...(data as DealSummary),
       pickup_time: data.pickup_time,
       pickup: pickup?.name ?? null,
       pickup_description: pickup?.description ?? null,
+      active_join: activeJoin,
     };
+    return deal;
   } catch {
     return null;
   }
 }
 
-export default async function DealPage({ params }: DealPageProps) {
-  const { slug } = await params;
+export default async function DealPage({ params, searchParams }: DealPageProps & { searchParams: Promise<{ notice?: string }> }) {
+  const [{ slug }, query] = await Promise.all([params, searchParams]);
   const deal = await getDeal(slug);
   if (!deal) notFound();
-  return <LiveDeal deal={deal} />;
+  return <LiveDeal deal={deal} notice={query.notice} />;
 }

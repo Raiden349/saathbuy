@@ -23,6 +23,19 @@ export const authCallbackSchema = z.object({
   next: z.string().optional(),
 });
 
+export const joinDealSchema = z.object({
+  deal_slug: z.string().trim().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(120),
+  qty: z.coerce.number().int().min(1).max(10),
+  points_redeemed: z.coerce.number().int().min(0).multipleOf(100),
+  payment_method: z.enum(["cash_at_pickup", "wallet"]),
+  wallet_reference: z.string().trim().max(120).optional(),
+});
+
+export const cancelJoinSchema = z.object({
+  deal_slug: z.string().trim().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(120),
+  join_id: z.string().uuid(),
+});
+
 export function safeReturnPath(value: string | undefined) {
   if (!value || !value.startsWith("/") || value.startsWith("//") || value.includes("\\")) return "/";
   return value;
