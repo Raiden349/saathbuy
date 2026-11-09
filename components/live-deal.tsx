@@ -11,6 +11,7 @@ import { createClient } from "@/lib/supabase/client";
 import { getDealPricing } from "@/lib/pricing";
 import { ShareButton } from "@/components/share-button";
 import type { DealSummary } from "@/components/deal-card";
+import { PricePreview } from "@/components/price-preview";
 
 type DealDetailData = DealSummary & { pickup_time: string | null; pickup: string | null; pickup_description: string | null; active_join: { id: string; qty: number } | null; referralCount: number; referrerId: string | null };
 
@@ -68,6 +69,7 @@ export function LiveDeal({ deal, notice }: { deal: DealDetailData; notice?: stri
       {statusCopy[deal.status]
         ? <p className={`status-message status-${deal.status}`} role="status">{statusCopy[deal.status]}</p>
         : <div className="detail-progress"><SlotRow tiers={deal.tiers} count={joinerCount} initialCount={deal.joiner_count} /><Countdown deadline={deal.deadline} /></div>}
+      {open && <PricePreview tiers={deal.tiers} joinerCount={joinerCount} retailPrice={deal.retail_price} />}
       {notice && noticeCopy[notice] && <p className="status-message" role="status">{noticeCopy[notice]}</p>}
       {open && deal.active_join && (
         <div className="joined-state"><p>You&apos;re in. {deal.active_join.qty} {deal.active_join.qty === 1 ? "pack" : "packs"}.</p>

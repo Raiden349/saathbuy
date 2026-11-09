@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Countdown } from "@/components/countdown";
 import { SlotRow } from "@/components/slot-row";
 import { getDealPricing } from "@/lib/pricing";
+import { PricePreview } from "@/components/price-preview";
 
 export type DealSummary = {
   id: string;
@@ -54,8 +55,8 @@ export function DealCard({ deal, featured }: { deal: DealSummary; featured?: boo
   if (featured) {
     return (
       <article className="featured-deal">
-        <Link className="featured-link" href={`/deals/${deal.slug}`}>
-          <DealPhoto deal={deal} featured />
+        <div className="featured-link">
+          <Link aria-label={`View ${deal.title}`} className="featured-photo-link" href={`/deals/${deal.slug}`}><DealPhoto deal={deal} featured /></Link>
           <div className="featured-content">
             <h2 className="featured-title">{deal.title}</h2>
             <div className="price-line">
@@ -64,9 +65,10 @@ export function DealCard({ deal, featured }: { deal: DealSummary; featured?: boo
               <Countdown deadline={deal.deadline} compact />
             </div>
             <SlotRow tiers={deal.tiers} count={deal.joiner_count} variant="compact" />
-            <span className="featured-action">View deal</span>
+            <PricePreview tiers={deal.tiers} joinerCount={deal.joiner_count} retailPrice={deal.retail_price} />
+            <Link className="featured-action" href={`/deals/${deal.slug}`}>View deal <span aria-hidden="true">→</span></Link>
           </div>
-        </Link>
+        </div>
       </article>
     );
   }
