@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Hanken_Grotesk, Outfit } from "next/font/google";
 import Script from "next/script";
+import { StartupLoadingScreen } from "@/components/startup-loading-screen";
 import "./globals.css";
 
 const outfit = Outfit({ subsets: ["latin"], weight: ["600", "700"], variable: "--font-outfit", display: "swap" });
@@ -22,7 +23,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <head>
         <Script id="saathbuy-theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: "try{var t=localStorage.getItem('saathbuy-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}" }} />
       </head>
-      <body>{children}</body>
+      <body><StartupLoadingScreen />{children}</body>
     </html>
   );
 }
