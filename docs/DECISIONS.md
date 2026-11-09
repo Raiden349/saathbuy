@@ -15,3 +15,9 @@
 - Seed pickup times at 4:00 pm Asia/Karachi and store them as `timestamptz` values.
 - Make the seed safe to run again by skipping existing pickup points, deals, and deal-cost rows.
 - Restrict profile updates with PostgreSQL column grants so users cannot change balance, admin, credit, or streak fields.
+
+## Phase 4
+
+- Read deals through the anon/authenticated Supabase client and close expired deals lazily before Home and detail reads.
+- Only optimize deal images from the configured Supabase project's public Storage path; missing or unsupported URLs stay on the category tile.
+- Render a stable "Deadline" label until the countdown hydrates in the browser to avoid server/client clock mismatches.

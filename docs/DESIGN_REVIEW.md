@@ -16,3 +16,12 @@
 - Login has a compact left-aligned form. Signup keeps all five required fields, including department and student type, in a single vertical flow that can scroll on shorter devices.
 - No app header or bottom tabs appear on the standalone auth screens.
 - Remaining owner action: allowlist the local and production `/auth/callback` URLs in Supabase before testing confirmation emails.
+
+## Home and deal detail
+
+- Review: `design-review/home-375.png`, `design-review/home-1280.png`, `design-review/deal-375.png`, and `design-review/deal-1280.png`.
+- Home selects the soonest open deal as the featured block, filters the live list with one horizontally scrolling category row, and separates other deals with 1 px rules instead of repeated cards.
+- Deal detail uses the 4:3 supplied product image when it is in the project's public Supabase Storage bucket. Missing or unsupported images use a flat mint-tint category tile.
+- SlotRow is the only animated element. It fills a slot once when the live joiner count increases and respects reduced motion.
+- Price starts at retail until a tier is reached. The tier ladder uses the stored thresholds and prices; closed deals use the database final price.
+- Mobile and desktop screenshots have no horizontal overflow. Remaining deviation: joining is wired to the next phase's route, which Phase 5 implements.
