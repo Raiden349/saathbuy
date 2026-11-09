@@ -37,6 +37,7 @@ export function JoinForm({ slug, maxQuantity, pointsBalance, freeFeeCredits, cur
   return (
     <form action={joinDealAction} className="join-form">
       <input name="deal_slug" type="hidden" value={slug} />
+      <input name="qty" type="hidden" value={quantity} />
       {issue && <p className="auth-message auth-error" role="alert">{issueCopy[issue] ?? issueCopy.failed}</p>}
       <section className="join-section">
         <h2 className="section-title">Quantity</h2>
