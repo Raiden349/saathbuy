@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/request-user";
+import { closeExpiredDealsIfNeeded } from "@/lib/pickups";
 
 export default async function AdminDealsPage() {
-  const supabase = await createClient().catch(() => null);
+  const [supabase, user] = await Promise.all([createClient().catch(() => null), getRequestUser()]);
   if (!supabase) redirect("/login?issue=configuration");
-  const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=%2Fadmin%2Fdeals");
-  await supabase.rpc("close_expired_deals");
+  await closeExpiredDealsIfNeeded(supabase);
   const { data: deals, error } = await supabase.from("deals")
     .select("id, title, status, deadline, joiner_count, final_price")
     .order("created_at", { ascending: false });

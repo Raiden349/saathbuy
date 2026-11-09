@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { JoinForm } from "@/components/join-form";
 import { getDealPricing } from "@/lib/pricing";
 import { createClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/request-user";
 
 type JoinPageProps = {
   params: Promise<{ slug: string }>;
@@ -11,20 +12,17 @@ type JoinPageProps = {
 
 export default async function JoinPage({ params, searchParams }: JoinPageProps) {
   const [{ slug }, query] = await Promise.all([params, searchParams]);
-  const supabase = await createClient().catch(() => null);
+  const [supabase, user] = await Promise.all([createClient().catch(() => null), getRequestUser()]);
   if (!supabase) redirect(`/login?next=${encodeURIComponent(`/deals/${slug}/join`)}`);
-
-  const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect(`/login?next=${encodeURIComponent(`/deals/${slug}/join`)}`);
 
-  await supabase.rpc("close_expired_deals");
-  const { data: deal, error } = await supabase
+  const [{ data: deal, error }, { data: profile }] = await Promise.all([supabase
     .from("deals")
     .select("id, slug, title, retail_price, tiers, max_qty_per_user, deadline, status, joiner_count, final_price, final_tier")
     .eq("slug", slug)
-    .maybeSingle();
+    .maybeSingle(), supabase.from("profiles").select("points_balance, free_fee_credits").eq("id", user.id).maybeSingle()]);
   if (error || !deal) notFound();
-  if (deal.status !== "open") {
+  if (deal.status !== "open" || new Date().toISOString() >= deal.deadline) {
     return (
       <main className="join-main">
         <Link className="back-link" href={`/deals/${slug}`}>Back to deal</Link>
@@ -33,8 +31,6 @@ export default async function JoinPage({ params, searchParams }: JoinPageProps) 
       </main>
     );
   }
-
-  const { data: profile } = await supabase.from("profiles").select("points_balance, free_fee_credits").eq("id", user.id).maybeSingle();
   const pricing = getDealPricing({ tiers: deal.tiers, joinerCount: deal.joiner_count, retailPrice: deal.retail_price });
 
   return (

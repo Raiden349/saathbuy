@@ -4,17 +4,18 @@ import { saveManualKpisAction } from "@/app/actions/admin";
 import { TestPushButton } from "@/components/test-push-button";
 import { countJoinsThisWeek } from "@/lib/admin-metrics";
 import { createClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/request-user";
+import { closeExpiredDealsIfNeeded } from "@/lib/pickups";
 
 type AdminHomeProps = { searchParams: Promise<{ issue?: string; notice?: string }> };
 
 export default async function AdminHomePage({ searchParams }: AdminHomeProps) {
   const query = await searchParams;
-  const supabase = await createClient().catch(() => null);
+  const [supabase, user] = await Promise.all([createClient().catch(() => null), getRequestUser()]);
   if (!supabase) redirect("/login?issue=configuration");
-  const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=%2Fadmin");
 
-  await supabase.rpc("close_expired_deals");
+  await closeExpiredDealsIfNeeded(supabase);
   const [{ data: deals }, { data: joins }, { data: manual, error: manualError }] = await Promise.all([
     supabase.from("deals").select("id, status, joiner_count, tiers"),
     supabase.from("deal_joins").select("user_id, created_at, status"),

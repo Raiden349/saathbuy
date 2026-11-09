@@ -4,6 +4,8 @@ import { collectPickupAction } from "@/app/actions/collection";
 import { CameraScanner } from "@/components/camera-scanner";
 import { parsePickupQrInput, verifyPickupQr } from "@/lib/qr-token";
 import { createClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/request-user";
+import { closeExpiredDealsIfNeeded } from "@/lib/pickups";
 
 type ScanPageProps = { searchParams: Promise<{ code?: string; join_id?: string; sig?: string; issue?: string; notice?: string }> };
 
@@ -33,11 +35,10 @@ export default async function AdminScanPage({ searchParams }: ScanPageProps) {
   } | null = null;
 
   if (validSignature && token) {
-    const supabase = await createClient().catch(() => null);
+    const [supabase, user] = await Promise.all([createClient().catch(() => null), getRequestUser()]);
     if (!supabase) redirect("/login?issue=configuration");
-    const { data: { user } } = await supabase.auth.getUser();
     if (!user) redirect("/login?next=%2Fadmin%2Fscan");
-    await supabase.rpc("close_expired_deals");
+    await closeExpiredDealsIfNeeded(supabase);
 
     const { data: join, error: joinError } = await supabase
       .from("deal_joins")

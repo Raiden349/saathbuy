@@ -3,28 +3,22 @@ import { redirect } from "next/navigation";
 import { ShareButton } from "@/components/share-button";
 import { getDealPricing } from "@/lib/pricing";
 import { createClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/request-user";
+import { closeExpiredDealsIfNeeded } from "@/lib/pickups";
 
 export default async function RewardsPage() {
-  const supabase = await createClient().catch(() => null);
+  const [supabase, user] = await Promise.all([createClient().catch(() => null), getRequestUser()]);
   if (!supabase) redirect("/login?issue=configuration");
-  const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=%2Frewards");
 
-  await supabase.rpc("close_expired_deals");
+  await closeExpiredDealsIfNeeded(supabase);
   const [{ data: profile }, { data: ledger }, { data: deals }] = await Promise.all([
     supabase.from("profiles").select("points_balance, streak_weeks, free_fee_credits").eq("id", user.id).maybeSingle(),
-    supabase.from("points_ledger").select("id, delta, reason, join_id, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(30),
-    supabase.from("deals").select("id, slug, title, retail_price, tiers, joiner_count").eq("status", "open").order("deadline", { ascending: true }).limit(8),
+    supabase.from("points_ledger").select("id, delta, reason, join_id, created_at, joined_deal:deal_joins!points_ledger_join_id_fkey(deal:deals!deal_joins_deal_id_fkey(title))").eq("user_id", user.id).order("created_at", { ascending: false }).limit(30),
+    supabase.from("deals").select("id, slug, title, retail_price, tiers, joiner_count").eq("status", "open").gt("deadline", new Date().toISOString()).order("deadline", { ascending: true }).limit(8),
   ]);
   const balance = profile?.points_balance ?? 0;
   const progress = Math.min(balance, 100);
-  const joinIds = [...new Set((ledger ?? []).map((entry) => entry.join_id).filter((id): id is string => Boolean(id)))];
-  const { data: joins } = joinIds.length ? await supabase.from("deal_joins").select("id, deal_id").in("id", joinIds) : { data: [] };
-  const dealIds = [...new Set((joins ?? []).map((join) => join.deal_id))];
-  const { data: joinedDeals } = dealIds.length ? await supabase.from("deals").select("id, title").in("id", dealIds) : { data: [] };
-  const joinToDeal = new Map((joins ?? []).map((join) => [join.id, join.deal_id]));
-  const dealNames = new Map((joinedDeals ?? []).map((deal) => [deal.id, deal.title]));
-
   return (
     <main className="rewards-main">
       <h1 className="home-title">Rewards</h1>
@@ -50,7 +44,7 @@ export default async function RewardsPage() {
         {(ledger ?? []).length === 0
           ? <p className="empty-state">No points yet. You earn 1 point for every Rs. 10 you spend, added after pickup.</p>
           : <div className="points-ledger">{ledger!.map((entry) => {
-            const title = entry.join_id ? dealNames.get(joinToDeal.get(entry.join_id) ?? "") : null;
+            const title = entry.join_id ? entry.joined_deal?.deal?.title : null;
             return <div className="points-ledger-row" key={entry.id}>
               <div><strong>{entry.reason === "earned" ? "Earned" : entry.reason === "redeemed" ? "Redeemed" : entry.reason === "refund" ? "Refund" : "Bonus"}</strong><span>{title ?? new Intl.DateTimeFormat("en-PK", { dateStyle: "medium", timeZone: "Asia/Karachi" }).format(new Date(entry.created_at))}</span></div>
               <strong className={entry.delta < 0 ? "points-negative" : ""}>{entry.delta > 0 ? "+" : ""}{entry.delta}</strong>

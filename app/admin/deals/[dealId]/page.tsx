@@ -2,17 +2,18 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { markCompletedAction, markDeliveredAction } from "@/app/actions/collection";
 import { createClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/request-user";
+import { closeExpiredDealsIfNeeded } from "@/lib/pickups";
 
 type AdminDealProps = { params: Promise<{ dealId: string }>; searchParams: Promise<{ issue?: string; notice?: string }> };
 
 export default async function AdminDealPage({ params, searchParams }: AdminDealProps) {
   const [{ dealId }, query] = await Promise.all([params, searchParams]);
-  const supabase = await createClient().catch(() => null);
+  const [supabase, user] = await Promise.all([createClient().catch(() => null), getRequestUser()]);
   if (!supabase) redirect("/login?issue=configuration");
-  const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect(`/login?next=${encodeURIComponent(`/admin/deals/${dealId}`)}`);
 
-  await supabase.rpc("close_expired_deals");
+  await closeExpiredDealsIfNeeded(supabase);
   const { data: deal, error } = await supabase
     .from("deals")
     .select("id, title, status, deadline, joiner_count, final_tier, final_price, pickup_point_id, pickup_time")

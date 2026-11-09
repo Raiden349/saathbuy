@@ -4,6 +4,7 @@ import { PickupQrCode } from "@/components/qr-code";
 import { createPickupQr } from "@/lib/qr-token";
 import { getMyPickups, pickupStatus } from "@/lib/pickups";
 import { createClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/request-user";
 
 type PickupDetailProps = { params: Promise<{ joinId: string }> };
 
@@ -13,10 +14,8 @@ function formatPickupTime(value: string) {
 
 export default async function PickupDetailPage({ params }: PickupDetailProps) {
   const { joinId } = await params;
-  let supabase;
-  try { supabase = await createClient(); }
-  catch { redirect(`/login?next=${encodeURIComponent(`/pickup/${joinId}`)}`); }
-  const { data: { user } } = await supabase.auth.getUser();
+  const [supabase, user] = await Promise.all([createClient().catch(() => null), getRequestUser()]);
+  if (!supabase) redirect(`/login?issue=configuration&next=${encodeURIComponent(`/pickup/${joinId}`)}`);
   if (!user) redirect(`/login?next=${encodeURIComponent(`/pickup/${joinId}`)}`);
 
   let pickups;

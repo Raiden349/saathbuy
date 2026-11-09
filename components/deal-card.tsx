@@ -56,7 +56,7 @@ export function DealCard({ deal, featured }: { deal: DealSummary; featured?: boo
     return (
       <article className="featured-deal">
         <div className="featured-link">
-          <Link aria-label={`View ${deal.title}`} className="featured-photo-link" href={`/deals/${deal.slug}`}><DealPhoto deal={deal} featured /></Link>
+          <Link aria-label={`View ${deal.title}`} className="featured-photo-link" href={`/deals/${deal.slug}`} prefetch={false}><DealPhoto deal={deal} featured /></Link>
           <div className="featured-content">
             <h2 className="featured-title">{deal.title}</h2>
             <div className="price-line">
@@ -66,7 +66,7 @@ export function DealCard({ deal, featured }: { deal: DealSummary; featured?: boo
             </div>
             <SlotRow tiers={deal.tiers} count={deal.joiner_count} variant="compact" />
             <PricePreview tiers={deal.tiers} joinerCount={deal.joiner_count} retailPrice={deal.retail_price} />
-            <Link className="featured-action" href={`/deals/${deal.slug}`}>View deal <span aria-hidden="true">→</span></Link>
+            <Link className="featured-action" href={`/deals/${deal.slug}`} prefetch={false}>View deal <span aria-hidden="true">→</span></Link>
           </div>
         </div>
       </article>
@@ -75,7 +75,7 @@ export function DealCard({ deal, featured }: { deal: DealSummary; featured?: boo
 
   return (
     <article className="deal-list-row">
-      <Link className="deal-row-link" href={`/deals/${deal.slug}`}>
+      <Link className="deal-row-link" href={`/deals/${deal.slug}`} prefetch={false}>
         <DealPhoto deal={deal} />
         <div className="deal-row-copy">
           <h2 className="deal-row-title">{deal.title}</h2>

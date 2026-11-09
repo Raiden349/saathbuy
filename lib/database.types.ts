@@ -100,13 +100,19 @@ export type Database = {
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["deals"]["Insert"]>;
-        Relationships: [];
+        Relationships: [{
+          foreignKeyName: "deals_pickup_point_id_fkey";
+          columns: ["pickup_point_id"];
+          isOneToOne: false;
+          referencedRelation: "pickup_points";
+          referencedColumns: ["id"];
+        }];
       };
       deal_costs: {
         Row: { deal_id: string; wholesale_cost: number };
         Insert: { deal_id: string; wholesale_cost: number };
         Update: Partial<Database["public"]["Tables"]["deal_costs"]["Insert"]>;
-        Relationships: [];
+        Relationships: [{ foreignKeyName: "deal_costs_deal_id_fkey"; columns: ["deal_id"]; isOneToOne: true; referencedRelation: "deals"; referencedColumns: ["id"] }];
       };
       deal_joins: {
         Row: DealJoinRow;
@@ -127,13 +133,20 @@ export type Database = {
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["deal_joins"]["Insert"]>;
-        Relationships: [];
+        Relationships: [
+          { foreignKeyName: "deal_joins_deal_id_fkey"; columns: ["deal_id"]; isOneToOne: false; referencedRelation: "deals"; referencedColumns: ["id"] },
+          { foreignKeyName: "deal_joins_user_id_fkey"; columns: ["user_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+          { foreignKeyName: "deal_joins_referred_by_fkey"; columns: ["referred_by"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+        ];
       };
       points_ledger: {
         Row: { id: string; user_id: string; delta: number; reason: string; join_id: string | null; created_at: string };
         Insert: { id?: string; user_id: string; delta: number; reason: string; join_id?: string | null; created_at?: string };
         Update: Partial<Database["public"]["Tables"]["points_ledger"]["Insert"]>;
-        Relationships: [];
+        Relationships: [
+          { foreignKeyName: "points_ledger_user_id_fkey"; columns: ["user_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+          { foreignKeyName: "points_ledger_join_id_fkey"; columns: ["join_id"]; isOneToOne: false; referencedRelation: "deal_joins"; referencedColumns: ["id"] },
+        ];
       };
       deal_requests: {
         Row: { id: string; user_id: string; title: string; note: string | null; created_at: string };

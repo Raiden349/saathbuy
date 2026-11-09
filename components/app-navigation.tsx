@@ -21,7 +21,7 @@ export function DesktopNavigation() {
   return (
     <nav aria-label="Main navigation" className="desktop-nav">
       {tabs.map(({ href, label }) => (
-        <Link aria-current={isActive(pathname, href) || (label === "Account" && (pathname.startsWith("/login") || pathname.startsWith("/signup"))) ? "page" : undefined} className="desktop-nav-link" href={href} key={href}>{label}</Link>
+        <Link aria-current={isActive(pathname, href) || (label === "Account" && (pathname.startsWith("/login") || pathname.startsWith("/signup"))) ? "page" : undefined} className="desktop-nav-link" href={href} key={href} prefetch={false}>{label}</Link>
       ))}
     </nav>
   );
@@ -32,7 +32,7 @@ export function BottomNavigation() {
   return (
     <nav className="bottom-nav" aria-label="Main navigation">
       {tabs.map(({ label, href, icon: Icon }) => (
-        <Link className="nav-link" href={href} key={label} aria-current={isActive(pathname, href) || (label === "Account" && (pathname.startsWith("/login") || pathname.startsWith("/signup"))) ? "page" : undefined}>
+        <Link className="nav-link" href={href} key={label} prefetch={false} aria-current={isActive(pathname, href) || (label === "Account" && (pathname.startsWith("/login") || pathname.startsWith("/signup"))) ? "page" : undefined}>
           <Icon aria-hidden="true" size={20} strokeWidth={1.75} />
           <span>{label}</span>
         </Link>

@@ -2,17 +2,18 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { AdminDealForm } from "@/components/admin-deal-form";
 import { createClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/request-user";
+import { closeExpiredDealsIfNeeded } from "@/lib/pickups";
 
 export default async function EditAdminDealPage({ params, searchParams }: {
   params: Promise<{ dealId: string }>;
   searchParams: Promise<{ issue?: string }>;
 }) {
   const [{ dealId }, query] = await Promise.all([params, searchParams]);
-  const supabase = await createClient().catch(() => null);
+  const [supabase, user] = await Promise.all([createClient().catch(() => null), getRequestUser()]);
   if (!supabase) redirect("/login?issue=configuration");
-  const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect(`/login?next=${encodeURIComponent(`/admin/deals/${dealId}/edit`)}`);
-  await supabase.rpc("close_expired_deals");
+  await closeExpiredDealsIfNeeded(supabase);
   const [{ data: deal }, { data: pickupPoints }, { data: cost }] = await Promise.all([
     supabase.from("deals").select("id, title, description, image_url, category, retail_price, tiers, max_qty_per_user, deadline, pickup_point_id, pickup_time, sponsor_name, status").eq("id", dealId).maybeSingle(),
     supabase.from("pickup_points").select("id, name").eq("active", true).order("name"),

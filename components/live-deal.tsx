@@ -13,7 +13,7 @@ import { ShareButton } from "@/components/share-button";
 import type { DealSummary } from "@/components/deal-card";
 import { PricePreview } from "@/components/price-preview";
 
-type DealDetailData = DealSummary & { pickup_time: string | null; pickup: string | null; pickup_description: string | null; active_join: { id: string; qty: number } | null; referralCount: number; referrerId: string | null };
+type DealDetailData = DealSummary & { pickup_time: string | null; pickup: string | null; pickup_description: string | null; active_join: { id: string; qty: number } | null; referrerId: string | null };
 
 export function LiveDeal({ deal, notice }: { deal: DealDetailData; notice?: string }) {
   const [joinerCount, setJoinerCount] = useState(deal.joiner_count);
@@ -45,7 +45,7 @@ export function LiveDeal({ deal, notice }: { deal: DealDetailData; notice?: stri
     delivered: `Deal confirmed. Everyone pays Rs. ${deal.final_price ?? pricing.currentPrice} each. Pickup details are ready.`,
     completed: `Deal confirmed. Everyone pays Rs. ${deal.final_price ?? pricing.currentPrice} each.`,
   };
-  const open = deal.status === "open";
+  const open = deal.status === "open" && new Date().toISOString() < deal.deadline;
   const noticeCopy: Record<string, string> = {
     joined: `Joined. You're in. ${deal.active_join?.qty ?? 1} packs.`,
     cancelled: "Cancelled. Your points are back.",
@@ -93,7 +93,6 @@ export function LiveDeal({ deal, notice }: { deal: DealDetailData; notice?: stri
       {deal.referrerId && process.env.NEXT_PUBLIC_SITE_URL && <section className="detail-section share-section">
         <h2 className="section-title">Invite friends</h2>
         <ShareButton title={deal.title} slug={deal.slug} price={pricing.currentPrice} siteUrl={process.env.NEXT_PUBLIC_SITE_URL} referrerId={deal.referrerId} />
-        {deal.referralCount > 0 && <p className="form-help">{deal.referralCount} {deal.referralCount === 1 ? "friend joined" : "friends joined"} from your link.</p>}
       </section>}
       {open && !deal.active_join && (
         <div className="detail-sticky-action">

@@ -2,14 +2,14 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createRequestAction, toggleRequestVoteAction } from "@/app/actions/engagement";
 import { createClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/request-user";
 
 type RequestPageProps = { searchParams: Promise<{ issue?: string; notice?: string }> };
 
 export default async function RequestPage({ searchParams }: RequestPageProps) {
   const query = await searchParams;
-  const supabase = await createClient().catch(() => null);
+  const [supabase, user] = await Promise.all([createClient().catch(() => null), getRequestUser()]);
   if (!supabase) redirect("/login?issue=configuration");
-  const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=%2Frequest");
   const [{ data: requests, error }, { data: votes }] = await Promise.all([
     supabase.from("deal_requests").select("id, title, note, created_at").order("created_at", { ascending: false }).limit(100),

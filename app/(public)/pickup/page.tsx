@@ -2,12 +2,11 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { pickupStatus, getMyPickups } from "@/lib/pickups";
 import { createClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/request-user";
 
 export default async function PickupsPage() {
-  let supabase;
-  try { supabase = await createClient(); }
-  catch { redirect("/login?next=%2Fpickup"); }
-  const { data: { user } } = await supabase.auth.getUser();
+  const [supabase, user] = await Promise.all([createClient().catch(() => null), getRequestUser()]);
+  if (!supabase) redirect("/login?issue=configuration&next=%2Fpickup");
   if (!user) redirect("/login?next=%2Fpickup");
 
   let pickups;
@@ -25,7 +24,7 @@ export default async function PickupsPage() {
             {pickups.map((pickup) => {
               const status = pickupStatus(pickup.deal.status, pickup.status);
               return (
-                <Link className="pickup-row" href={`/pickup/${pickup.id}`} key={pickup.id}>
+                <Link className="pickup-row" href={`/pickup/${pickup.id}`} key={pickup.id} prefetch={false}>
                   <span className="pickup-row-title">{pickup.deal.title}</span>
                   <span className={`pickup-status pickup-status-${status.toLowerCase()}`}>{status}</span>
                   <span className="pickup-row-meta">{pickup.qty} {pickup.qty === 1 ? "pack" : "packs"}{pickup.amount_due !== null ? ` · Rs. ${pickup.amount_due}` : ""}</span>
