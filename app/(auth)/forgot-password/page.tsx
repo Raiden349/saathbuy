@@ -1,13 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { PasswordResetForm } from "@/components/password-reset-form";
 
 export default function ForgotPasswordPage() {
   return (
     <main className="auth-main">
+      <div className="auth-theme-control"><ThemeToggle /></div>
       <div className="auth-content">
         <div className="auth-logo">
-          <Image src="/brand/logo-full-on-dark.png" alt="SaathBuy" width={1154} height={1060} priority style={{ width: 140, height: "auto" }} />
+          <Image className="brand-dark" src="/brand/logo-full-on-dark.png" alt="SaathBuy" width={1154} height={1060} priority style={{ width: 140, height: "auto" }} />
+          <Image className="brand-light" src="/brand/logo-full.png" alt="" width={1154} height={1060} priority style={{ width: 140, height: "auto" }} />
         </div>
         <h1 className="auth-title">Reset your password</h1>
         <PasswordResetForm />
