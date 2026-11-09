@@ -37,7 +37,7 @@ export default async function AdminHomePage({ searchParams }: AdminHomeProps) {
   const joinsThisWeek = countJoinsThisWeek(joinRows);
 
   return <main className="admin-main">
-    <div className="admin-heading-row"><h1 className="home-title">Admin</h1><div className="admin-heading-actions"><Link className="button-secondary" href="/admin/scan">Scan a code</Link><Link className="button-primary" href="/admin/deals">Manage deals</Link></div></div>
+    <div className="admin-heading-row"><h1 className="home-title">Admin</h1><div className="admin-heading-actions"><Link className="button-secondary" href="/admin/scan">Scan a code</Link><Link className="button-secondary" href="/admin/auctions/new">Create auction</Link><Link className="button-primary" href="/admin/deals">Manage deals</Link></div></div>
     {query.notice === "kpi" && <p className="status-message" role="status">Manual figures saved.</p>}
     {query.issue === "kpi" && <p className="auth-message auth-error" role="alert">Manual figures could not be saved. Check the values and database setup.</p>}
     <section className="admin-section"><h2 className="section-title">Campus activity</h2>

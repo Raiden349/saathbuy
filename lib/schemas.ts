@@ -110,6 +110,20 @@ export const manualKpiSchema = z.object({
   sponsor_leads: z.coerce.number().int().min(0).max(1_000_000_000),
 });
 
+export const adminAuctionSchema = z.object({
+  title: z.string().trim().min(2).max(120),
+  description: optionalText(1000),
+  image_url: z.preprocess((value) => value === "" ? undefined : value, z.string().url().refine((value) => new URL(value).protocol === "https:").optional()),
+  starting_price: z.coerce.number().int().min(2).max(1_000_000),
+  min_bid_increment: z.coerce.number().int().min(1).max(100_000),
+  ends_at: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/),
+});
+
+export const auctionBidSchema = z.object({
+  auction_id: z.string().uuid(),
+  points: z.coerce.number().int().min(1).max(1_000_000),
+});
+
 export function safeReturnPath(value: string | undefined) {
   if (!value || !value.startsWith("/") || value.startsWith("//") || value.includes("\\")) return "/";
   return value;

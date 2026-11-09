@@ -14,7 +14,7 @@ export default async function RewardsPage() {
   await closeExpiredDealsIfNeeded(supabase);
   const [{ data: profile }, { data: ledger }, { data: deals }] = await Promise.all([
     supabase.from("profiles").select("points_balance, streak_weeks, free_fee_credits").eq("id", user.id).maybeSingle(),
-    supabase.from("points_ledger").select("id, delta, reason, join_id, created_at, joined_deal:deal_joins!points_ledger_join_id_fkey(deal:deals!deal_joins_deal_id_fkey(title))").eq("user_id", user.id).order("created_at", { ascending: false }).limit(30),
+    supabase.from("points_ledger").select("id, delta, reason, join_id, auction_id, created_at, joined_deal:deal_joins!points_ledger_join_id_fkey(deal:deals!deal_joins_deal_id_fkey(title)), auction:auctions!points_ledger_auction_id_fkey(title)").eq("user_id", user.id).order("created_at", { ascending: false }).limit(30),
     supabase.from("deals").select("id, slug, title, retail_price, tiers, joiner_count").eq("status", "open").gt("deadline", new Date().toISOString()).order("deadline", { ascending: true }).limit(8),
   ]);
   const balance = profile?.points_balance ?? 0;
@@ -44,9 +44,10 @@ export default async function RewardsPage() {
         {(ledger ?? []).length === 0
           ? <p className="empty-state">No points yet. You earn 1 point for every Rs. 10 you spend, added after pickup.</p>
           : <div className="points-ledger">{ledger!.map((entry) => {
-            const title = entry.join_id ? entry.joined_deal?.deal?.title : null;
+            const title = entry.join_id ? entry.joined_deal?.deal?.title : entry.auction?.title;
+            const reason = entry.reason === "earned" ? "Earned" : entry.reason === "redeemed" ? "Redeemed" : entry.reason === "refund" ? "Refund" : entry.reason === "auction_bid" ? "Auction bid held" : entry.reason === "auction_refund" ? "Auction points returned" : "Bonus";
             return <div className="points-ledger-row" key={entry.id}>
-              <div><strong>{entry.reason === "earned" ? "Earned" : entry.reason === "redeemed" ? "Redeemed" : entry.reason === "refund" ? "Refund" : "Bonus"}</strong><span>{title ?? new Intl.DateTimeFormat("en-PK", { dateStyle: "medium", timeZone: "Asia/Karachi" }).format(new Date(entry.created_at))}</span></div>
+              <div><strong>{reason}</strong><span>{title ?? new Intl.DateTimeFormat("en-PK", { dateStyle: "medium", timeZone: "Asia/Karachi" }).format(new Date(entry.created_at))}</span></div>
               <strong className={entry.delta < 0 ? "points-negative" : ""}>{entry.delta > 0 ? "+" : ""}{entry.delta}</strong>
             </div>;
           })}</div>}

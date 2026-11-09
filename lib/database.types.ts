@@ -51,6 +51,25 @@ type DealJoinRow = {
   created_at: string;
 };
 
+export type AuctionRow = {
+  id: string;
+  title: string;
+  description: string | null;
+  image_url: string | null;
+  starting_price: number;
+  min_bid_increment: number;
+  starts_at: string;
+  ends_at: string;
+  status: string;
+  top_bid_points: number;
+  top_bidder_id: string | null;
+  bid_count: number;
+  winner_id: string | null;
+  final_price: number | null;
+  created_by: string;
+  created_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -140,12 +159,32 @@ export type Database = {
         ];
       };
       points_ledger: {
-        Row: { id: string; user_id: string; delta: number; reason: string; join_id: string | null; created_at: string };
-        Insert: { id?: string; user_id: string; delta: number; reason: string; join_id?: string | null; created_at?: string };
+        Row: { id: string; user_id: string; delta: number; reason: string; join_id: string | null; auction_id: string | null; created_at: string };
+        Insert: { id?: string; user_id: string; delta: number; reason: string; join_id?: string | null; auction_id?: string | null; created_at?: string };
         Update: Partial<Database["public"]["Tables"]["points_ledger"]["Insert"]>;
         Relationships: [
           { foreignKeyName: "points_ledger_user_id_fkey"; columns: ["user_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
           { foreignKeyName: "points_ledger_join_id_fkey"; columns: ["join_id"]; isOneToOne: false; referencedRelation: "deal_joins"; referencedColumns: ["id"] },
+          { foreignKeyName: "points_ledger_auction_id_fkey"; columns: ["auction_id"]; isOneToOne: false; referencedRelation: "auctions"; referencedColumns: ["id"] },
+        ];
+      };
+      auctions: {
+        Row: AuctionRow;
+        Insert: { id?: string; title: string; description?: string | null; image_url?: string | null; starting_price: number; min_bid_increment?: number; starts_at?: string; ends_at: string; status?: string; top_bid_points?: number; top_bidder_id?: string | null; bid_count?: number; winner_id?: string | null; final_price?: number | null; created_by: string; created_at?: string };
+        Update: Partial<Database["public"]["Tables"]["auctions"]["Insert"]>;
+        Relationships: [
+          { foreignKeyName: "auctions_top_bidder_id_fkey"; columns: ["top_bidder_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+          { foreignKeyName: "auctions_winner_id_fkey"; columns: ["winner_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+          { foreignKeyName: "auctions_created_by_fkey"; columns: ["created_by"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+        ];
+      };
+      auction_bids: {
+        Row: { id: string; auction_id: string; user_id: string; points: number; status: string; created_at: string };
+        Insert: { id?: string; auction_id: string; user_id: string; points: number; status?: string; created_at?: string };
+        Update: Partial<Database["public"]["Tables"]["auction_bids"]["Insert"]>;
+        Relationships: [
+          { foreignKeyName: "auction_bids_auction_id_fkey"; columns: ["auction_id"]; isOneToOne: false; referencedRelation: "auctions"; referencedColumns: ["id"] },
+          { foreignKeyName: "auction_bids_user_id_fkey"; columns: ["user_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
         ];
       };
       deal_requests: {
@@ -184,6 +223,9 @@ export type Database = {
       close_expired_deals: { Args: Record<PropertyKey, never>; Returns: number };
       mark_delivered: { Args: { p_deal: string }; Returns: DealRow };
       collect_join: { Args: { p_join: string }; Returns: DealJoinRow };
+      create_auction: { Args: { p_title: string; p_description: string | null; p_image_url: string | null; p_starting_price: number; p_min_bid_increment: number; p_ends_at: string }; Returns: AuctionRow };
+      bid_on_auction: { Args: { p_auction: string; p_points: number }; Returns: AuctionRow };
+      settle_expired_auctions: { Args: Record<PropertyKey, never>; Returns: number };
     };
     Enums: { [_ in never]: never };
     CompositeTypes: { [_ in never]: never };

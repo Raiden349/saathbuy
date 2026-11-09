@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Gift, House, PackageCheck, Sparkles, UserRound } from "lucide-react";
+import { Gift, Gavel, House, PackageCheck, Sparkles, UserRound } from "lucide-react";
 
 const tabs = [
   { label: "Deals", href: "/", icon: House },
   { label: "Pickups", href: "/pickup", icon: PackageCheck },
   { label: "Rewards", href: "/rewards", icon: Gift },
+  { label: "Auctions", href: "/auctions", icon: Gavel },
   { label: "Request", href: "/request", icon: Sparkles },
   { label: "Account", href: "/login", icon: UserRound },
 ] as const;

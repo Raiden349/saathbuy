@@ -1,23 +1,29 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 type Theme = "light" | "dark";
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("dark");
-
-  useEffect(() => {
-    const current = document.documentElement.dataset.theme;
-    if (current === "light" || current === "dark") setTheme(current);
-  }, []);
+  const theme = useSyncExternalStore(
+    (onChange) => {
+      window.addEventListener("saathbuy-theme-change", onChange);
+      window.addEventListener("storage", onChange);
+      return () => {
+        window.removeEventListener("saathbuy-theme-change", onChange);
+        window.removeEventListener("storage", onChange);
+      };
+    },
+    () => document.documentElement.dataset.theme === "light" ? "light" : "dark",
+    () => "dark",
+  );
 
   function toggleTheme() {
     const next: Theme = theme === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = next;
     try { localStorage.setItem("saathbuy-theme", next); } catch { /* Keep the theme active for this page when storage is unavailable. */ }
-    setTheme(next);
+    window.dispatchEvent(new Event("saathbuy-theme-change"));
   }
 
   const label = theme === "dark" ? "Switch to light theme" : "Switch to dark theme";
