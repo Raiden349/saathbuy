@@ -103,6 +103,10 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .button-primary { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; border: 0; border-radius: var(--radius-pill); background: var(--color-deep); padding: 0 20px; color: var(--color-surface); font: inherit; font-weight: 600; cursor: pointer; }
 .auth-message { margin: 0 0 16px; color: var(--color-ink-soft); }
 .auth-error { color: var(--color-error); }
+.auth-description { margin: 0; color: var(--color-ink-soft); }
+.auth-button-link { text-decoration: none; }
+.auth-text-button { min-height: 40px; border: 0; background: transparent; color: var(--color-deep); font: inherit; font-weight: 600; cursor: pointer; }
+.auth-text-button:disabled { opacity: .6; cursor: default; }
 .auth-switch { margin: 20px 0 0; color: var(--color-ink-soft); }
 .auth-switch a { color: var(--color-deep); font-weight: 600; }
 .detail-main { width: 100%; max-width: 600px; margin: 0 auto; padding: 20px 16px 192px; }

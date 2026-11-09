@@ -16,6 +16,18 @@ export const signupSchema = z.object({
   password: z.string().min(6),
 });
 
+export const passwordResetRequestSchema = z.object({ email: emailSchema });
+
+export const passwordResetCompleteSchema = z.object({
+  email: emailSchema,
+  token: z.string().trim().regex(/^\d{6}$/),
+  password: z.string().min(6).max(128),
+  confirm_password: z.string().min(6).max(128),
+}).refine((data) => data.password === data.confirm_password, {
+  path: ["confirm_password"],
+  message: "Passwords do not match.",
+});
+
 export const logoutSchema = z.object({}).passthrough();
 
 export const authCallbackSchema = z.object({

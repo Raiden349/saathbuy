@@ -39,6 +39,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           <input name="next" type="hidden" value={params.next ?? "/"} />
           <button className="button-primary" type="submit">Log in</button>
         </form>
+        <p className="auth-switch"><Link href="/forgot-password">Forgot your password?</Link></p>
         <p className="auth-switch">New to SaathBuy? <Link href="/signup">Create an account</Link></p>
       </div>
     </main>
