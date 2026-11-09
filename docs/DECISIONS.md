@@ -27,3 +27,10 @@
 - Keep server-side deal-join RPCs as the only write path for joins and cancellations. The browser submits choices; the SQL function validates balances, quantities, deadlines, wallet references, and final points updates.
 - Keep the 30-day referral ID in an HttpOnly, same-site cookie set only from a valid deal-detail `ref` UUID.
 - Show payment estimates from the active tier, with no external payment processing in v1.
+
+## Phase 6
+
+- Sign pickup QR payloads with a server-only HMAC; verify signatures before looking up a join or calling the collection RPC.
+- Keep camera access behind an explicit start action and offer the full QR URL as a manual fallback.
+- Use the existing `mark_delivered` and `collect_join` database RPCs for admin collection, preserving the database as the authority for payment, points, and deal completion.
+- Close expired deals through the existing lazy close function, with a daily authenticated Vercel cron as a backup.

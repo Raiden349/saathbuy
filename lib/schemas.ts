@@ -36,6 +36,14 @@ export const cancelJoinSchema = z.object({
   join_id: z.string().uuid(),
 });
 
+export const dealIdSchema = z.object({ deal_id: z.string().uuid() });
+
+export const collectJoinSchema = z.object({
+  deal_id: z.string().uuid(),
+  join_id: z.string().uuid(),
+  signature: z.string().regex(/^[0-9a-f]{16}$/i),
+});
+
 export function safeReturnPath(value: string | undefined) {
   if (!value || !value.startsWith("/") || value.startsWith("//") || value.includes("\\")) return "/";
   return value;

@@ -32,3 +32,11 @@
 - The page keeps quantity, points, payment method, and a receipt-style total in one column. Wallet reference appears only when Wallet is selected.
 - The estimate updates from the current tier, selected quantity, 100-point redemption blocks, and the student's service-fee credit count. The database function remains authoritative when the form is submitted.
 - No payment gateway is used. Wallet users enter a transaction ID for pickup verification.
+
+## Pickup and collection
+
+- Pickup details keep the deal name, collection status, quantity, amount due, pickup location, and pickup time in a single left-aligned flow.
+- The collection QR is presented on a white field for reliable scanning, with its short code available as a manual fallback.
+- The admin scanner supports camera scanning after an explicit user action and a manual code entry path.
+- Admin collection and delivery actions use the database RPCs; QR signatures are verified on the server before collection.
+- No decorative cards, gradients, shadows, or extra animation were added.
