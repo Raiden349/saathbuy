@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { LiveDeal } from "@/components/live-deal";
 import type { DealSummary } from "@/components/deal-card";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 type DealPageProps = { params: Promise<{ slug: string }> };
 
@@ -24,6 +25,7 @@ async function getDeal(slug: string) {
 
     let activeJoin: { id: string; qty: number } | null = null;
     const { data: { user } } = await supabase.auth.getUser();
+    let referralCount = 0;
     if (user) {
       const { data: join } = await supabase
         .from("deal_joins")
@@ -32,6 +34,11 @@ async function getDeal(slug: string) {
         .eq("user_id", user.id)
         .maybeSingle();
       if (join?.status === "joined") activeJoin = { id: join.id, qty: join.qty };
+      try {
+        const admin = createAdminClient();
+        const { count } = await admin.from("deal_joins").select("id", { count: "exact", head: true }).eq("deal_id", data.id).eq("referred_by", user.id).in("status", ["joined", "collected"]);
+        referralCount = count ?? 0;
+      } catch { referralCount = 0; }
     }
 
     const deal = {
@@ -40,6 +47,8 @@ async function getDeal(slug: string) {
       pickup: pickup?.name ?? null,
       pickup_description: pickup?.description ?? null,
       active_join: activeJoin,
+      referralCount,
+      referrerId: user?.id ?? null,
     };
     return deal;
   } catch {

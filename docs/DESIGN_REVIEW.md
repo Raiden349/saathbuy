@@ -40,3 +40,10 @@
 - The admin scanner supports camera scanning after an explicit user action and a manual code entry path.
 - Admin collection and delivery actions use the database RPCs; QR signatures are verified on the server before collection.
 - No decorative cards, gradients, shadows, or extra animation were added.
+
+## Rewards and engagement
+
+- Rewards keeps the points balance first, with a single 8 px progress bar toward Rs. 50, a three-slot streak indicator, and a divided points ledger.
+- Free-fee credits are shown as a plain count. WhatsApp sharing is available for open deals and includes the current group price and the signed-in user's referral ID.
+- Request a deal uses a single-column form and a divided product list sorted by vote count; voting uses a plain count and action button.
+- No decorative cards, gradients, shadows, or extra animation were added.

@@ -5,6 +5,7 @@ import type { Database } from "@/lib/database.types";
 type Client = SupabaseClient<Database>;
 
 export async function getMyPickups(supabase: Client, userId: string) {
+  await supabase.rpc("close_expired_deals");
   const { data: joins, error: joinError } = await supabase
     .from("deal_joins")
     .select("id, deal_id, qty, amount_due, payment_method, payment_status, status, collected_at, created_at")

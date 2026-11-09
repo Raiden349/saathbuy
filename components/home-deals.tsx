@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { DealSummary } from "@/components/deal-card";
 import { DealCard } from "@/components/deal-card";
+import Link from "next/link";
 
 export function HomeDeals({ deals }: { deals: DealSummary[] }) {
   const categories = useMemo(() => [...new Set(deals.map((deal) => deal.category).filter((value): value is string => Boolean(value)))].sort(), [deals]);
@@ -12,7 +13,7 @@ export function HomeDeals({ deals }: { deals: DealSummary[] }) {
     .sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime()), [deals, selected]);
 
   if (deals.length === 0) {
-    return <p className="empty-state">No open deals right now. Request one and the most-voted product goes up next.</p>;
+    return <div className="home-empty"><p className="empty-state">No open deals right now. Request one and the most-voted product goes up next.</p><Link className="button-secondary" href="/request">Request a deal</Link></div>;
   }
 
   const [featured, ...others] = filtered;

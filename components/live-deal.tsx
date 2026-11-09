@@ -9,9 +9,10 @@ import { TierLadder } from "@/components/tier-ladder";
 import { DealPhoto } from "@/components/deal-card";
 import { createClient } from "@/lib/supabase/client";
 import { getDealPricing } from "@/lib/pricing";
+import { ShareButton } from "@/components/share-button";
 import type { DealSummary } from "@/components/deal-card";
 
-type DealDetailData = DealSummary & { pickup_time: string | null; pickup: string | null; pickup_description: string | null; active_join: { id: string; qty: number } | null };
+type DealDetailData = DealSummary & { pickup_time: string | null; pickup: string | null; pickup_description: string | null; active_join: { id: string; qty: number } | null; referralCount: number; referrerId: string | null };
 
 export function LiveDeal({ deal, notice }: { deal: DealDetailData; notice?: string }) {
   const [joinerCount, setJoinerCount] = useState(deal.joiner_count);
@@ -87,6 +88,11 @@ export function LiveDeal({ deal, notice }: { deal: DealDetailData; notice?: stri
         {deal.pickup_description && <p>{deal.pickup_description}</p>}
         {deal.pickup_time && <p>{new Intl.DateTimeFormat("en-PK", { dateStyle: "full", timeStyle: "short", timeZone: "Asia/Karachi" }).format(new Date(deal.pickup_time))}</p>}
       </section>
+      {deal.referrerId && process.env.NEXT_PUBLIC_SITE_URL && <section className="detail-section share-section">
+        <h2 className="section-title">Invite friends</h2>
+        <ShareButton title={deal.title} slug={deal.slug} price={pricing.currentPrice} siteUrl={process.env.NEXT_PUBLIC_SITE_URL} referrerId={deal.referrerId} />
+        {deal.referralCount > 0 && <p className="form-help">{deal.referralCount} {deal.referralCount === 1 ? "friend joined" : "friends joined"} from your link.</p>}
+      </section>}
       {open && !deal.active_join && (
         <div className="detail-sticky-action">
           <div><span className="sticky-price">Rs. {pricing.currentPrice}</span><span className="sticky-caption"> You pay the best price reached at the deadline.</span></div>

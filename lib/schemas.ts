@@ -44,6 +44,13 @@ export const collectJoinSchema = z.object({
   signature: z.string().regex(/^[0-9a-f]{16}$/i),
 });
 
+export const requestProductSchema = z.object({
+  title: z.string().trim().min(2).max(100),
+  note: z.string().trim().max(500).optional(),
+});
+
+export const requestVoteSchema = z.object({ request_id: z.string().uuid() });
+
 export function safeReturnPath(value: string | undefined) {
   if (!value || !value.startsWith("/") || value.startsWith("//") || value.includes("\\")) return "/";
   return value;

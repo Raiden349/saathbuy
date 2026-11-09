@@ -12,6 +12,7 @@ export default async function AdminDealPage({ params, searchParams }: AdminDealP
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect(`/login?next=${encodeURIComponent(`/admin/deals/${dealId}`)}`);
 
+  await supabase.rpc("close_expired_deals");
   const { data: deal, error } = await supabase
     .from("deals")
     .select("id, title, status, deadline, joiner_count, final_tier, final_price, pickup_point_id, pickup_time")

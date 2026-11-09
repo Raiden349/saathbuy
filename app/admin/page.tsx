@@ -8,6 +8,7 @@ export default async function AdminHomePage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=%2Fadmin");
 
+  await supabase.rpc("close_expired_deals");
   const { data: deals, error } = await supabase
     .from("deals")
     .select("id, title, status, deadline, joiner_count, final_price")
