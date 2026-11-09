@@ -34,15 +34,39 @@ body { min-height: 100vh; margin: 0; background: var(--color-paper); color: var(
 button, a { -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: 2px solid var(--color-deep); outline-offset: 2px; }
 .app-frame { display: flex; min-height: 100vh; flex-direction: column; }
-.app-header { display: flex; height: 64px; align-items: center; padding: 0 16px; }
+.app-header { display: flex; height: 64px; align-items: center; justify-content: space-between; padding: 0 16px; }
 .brand-lockup { display: inline-flex; min-height: 44px; align-items: center; gap: 8px; }
 .home-main { width: 100%; max-width: 1120px; flex: 1; margin: 0 auto; padding: 28px 16px 104px; }
-.home-title { max-width: 600px; margin: 0; font-family: var(--font-outfit), sans-serif; font-size: 32px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.15; }
+.home-title { max-width: 600px; margin: 0; font-family: var(--font-outfit), sans-serif; font-size: 24px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.15; }
 .bottom-nav { position: fixed; z-index: 10; right: 0; bottom: 0; left: 0; display: grid; width: 100%; min-height: 72px; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--color-line); background: var(--color-surface); padding: 6px 8px max(6px, env(safe-area-inset-bottom)); }
 .nav-link { display: flex; min-height: 48px; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: var(--radius-pill); color: var(--color-ink-soft); font-size: 13px; font-weight: 500; text-decoration: none; }
 .nav-link[aria-current="page"] { color: var(--color-deep); font-weight: 600; }
+.account-login { display: inline-flex; min-height: 44px; align-items: center; padding: 0 12px; color: var(--color-deep); font-weight: 600; text-decoration: none; }
+.account-menu { position: relative; }
+.account-trigger { display: flex; width: 44px; height: 44px; align-items: center; justify-content: center; cursor: pointer; list-style: none; }
+.account-trigger::-webkit-details-marker { display: none; }
+.account-trigger span { display: flex; width: 36px; height: 36px; align-items: center; justify-content: center; border: 1px solid var(--color-line); border-radius: var(--radius-pill); background: var(--color-surface); color: var(--color-ink); font-family: var(--font-outfit), sans-serif; font-size: 13px; font-weight: 600; }
+.account-panel { position: absolute; z-index: 20; top: calc(100% + 8px); right: 0; width: max-content; min-width: 180px; max-width: 280px; border: 1px solid var(--color-line); border-radius: var(--radius-card); background: var(--color-surface); padding: 8px; }
+.account-name, .account-email { margin: 0; overflow-wrap: anywhere; padding: 8px; }
+.account-name { font-weight: 600; }
+.account-email { color: var(--color-ink-soft); font-size: 13px; }
+.account-menu-link { display: flex; width: 100%; min-height: 44px; align-items: center; border-radius: var(--radius-pill); padding: 0 8px; color: var(--color-deep); font: inherit; text-align: left; text-decoration: none; }
+.account-logout { border: 0; background: transparent; cursor: pointer; }
+.auth-main { display: flex; min-height: 100vh; justify-content: center; padding: 32px 16px 48px; }
+.auth-content { width: 100%; max-width: 400px; }
+.auth-logo { display: flex; justify-content: center; margin: 0 0 24px; }
+.auth-title { margin: 0 0 20px; font-family: var(--font-outfit), sans-serif; font-size: 24px; font-weight: 600; line-height: 1.15; }
+.auth-form { display: grid; gap: 16px; }
+.form-field { display: grid; gap: 6px; color: var(--color-ink); font-weight: 500; }
+.form-input { width: 100%; min-height: 48px; border: 1px solid var(--color-line); border-radius: var(--radius-field); background: var(--color-surface); padding: 10px 12px; color: var(--color-ink); font: inherit; }
+.button-primary { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; border: 0; border-radius: var(--radius-pill); background: var(--color-deep); padding: 0 20px; color: var(--color-surface); font: inherit; font-weight: 600; cursor: pointer; }
+.auth-message { margin: 0 0 16px; color: var(--color-ink-soft); }
+.auth-error { color: var(--color-error); }
+.auth-switch { margin: 20px 0 0; color: var(--color-ink-soft); }
+.auth-switch a { color: var(--color-deep); font-weight: 600; }
 @media (min-width: 768px) {
   .app-header { height: 72px; padding: 0 32px; }
   .home-main { padding: 56px 32px 120px; }
   .bottom-nav { right: 50%; bottom: 16px; left: auto; width: min(520px, calc(100% - 32px)); transform: translateX(50%); border: 1px solid var(--color-line); border-radius: var(--radius-pill); padding: 6px 12px; }
+  .auth-main { padding-top: 48px; }
 }

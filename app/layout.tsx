@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Hanken_Grotesk, Outfit } from "next/font/google";
 import "./globals.css";
-import { AppShell } from "@/components/app-shell";
 
 const outfit = Outfit({ subsets: ["latin"], weight: ["600", "700"], variable: "--font-outfit", display: "swap" });
 const hanken = Hanken_Grotesk({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-hanken", display: "swap" });
@@ -19,7 +18,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${outfit.variable} ${hanken.variable}`}>
-      <body><AppShell>{children}</AppShell></body>
+      <body>{children}</body>
     </html>
   );
 }
