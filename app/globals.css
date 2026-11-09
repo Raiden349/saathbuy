@@ -297,8 +297,14 @@ button:disabled { opacity: .65; cursor: default; }
 a { transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease, transform 160ms ease; }
 .app-frame { background: var(--color-paper); }
 .app-header { position: sticky; z-index: 12; top: 0; gap: 16px; border-bottom: 1px solid rgba(117, 213, 226, .14); background: rgba(7, 21, 31, .96); backdrop-filter: blur(14px); }
-.brand-lockup { flex: 0 0 auto; }
-.brand-lockup img { object-fit: contain; }
+.brand-lockup { display: inline-flex; height: 44px; min-height: 44px; flex: 0 0 auto; align-items: center; justify-content: center; gap: 8px; line-height: 0; }
+.brand-lockup img { display: block; flex: 0 0 auto; height: auto; object-fit: contain; }
+.brand-mark { width: 25px; }
+.brand-wordmark { width: 110px; }
+@media (min-width: 900px) {
+  .brand-mark { width: 28px; }
+  .brand-wordmark { width: 122px; }
+}
 .account-login { border: 1px solid var(--color-line); border-radius: 999px; background: var(--color-surface); }
 .account-trigger span { border-color: #087b85; background: #10343c; color: #bceef1; }
 .account-panel { border-color: var(--color-line); background: #0f1d28; box-shadow: 0 16px 36px #0008; }

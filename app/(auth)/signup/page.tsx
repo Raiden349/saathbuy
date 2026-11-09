@@ -23,7 +23,7 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
     <main className="auth-main">
       <div className="auth-content">
         <div className="auth-logo">
-          <Image src="/brand/logo-full.png" alt="SaathBuy" width={1154} height={1060} priority style={{ width: 140, height: "auto" }} />
+          <Image src="/brand/logo-full-on-dark.png" alt="SaathBuy" width={1154} height={1060} priority style={{ width: 140, height: "auto" }} />
         </div>
         <h1 className="auth-title">Create your account</h1>
         {issue && <p className="auth-message auth-error" role="alert">{issue}</p>}
