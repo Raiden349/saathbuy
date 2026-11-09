@@ -37,6 +37,7 @@ export default async function AdminScanPage({ searchParams }: ScanPageProps) {
     if (!supabase) redirect("/login?issue=configuration");
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) redirect("/login?next=%2Fadmin%2Fscan");
+    await supabase.rpc("close_expired_deals");
 
     const { data: join, error: joinError } = await supabase
       .from("deal_joins")

@@ -18,6 +18,15 @@ export async function markDeliveredAction(formData: FormData) {
   redirect(`/admin/deals/${parsed.data.deal_id}?notice=delivered`);
 }
 
+export async function markCompletedAction(formData: FormData) {
+  const parsed = dealIdSchema.safeParse(formValues(formData));
+  if (!parsed.success) redirect("/admin/deals?issue=invalid");
+  const supabase = await createClient();
+  const { error } = await supabase.from("deals").update({ status: "completed" }).eq("id", parsed.data.deal_id).eq("status", "delivered");
+  if (error) redirect(`/admin/deals/${parsed.data.deal_id}?issue=complete`);
+  redirect(`/admin/deals/${parsed.data.deal_id}?notice=completed`);
+}
+
 export async function collectPickupAction(formData: FormData) {
   const parsed = collectJoinSchema.safeParse(formValues(formData));
   if (!parsed.success || !verifyPickupQr(parsed.data.join_id, parsed.data.signature)) redirect("/admin/scan?issue=invalid");

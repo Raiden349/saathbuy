@@ -153,6 +153,12 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["push_subscriptions"]["Insert"]>;
         Relationships: [];
       };
+      kpi_manual: {
+        Row: { id: number; instagram_engagement: number; sponsor_leads: number; updated_at: string };
+        Insert: { id?: number; instagram_engagement?: number; sponsor_leads?: number; updated_at?: string };
+        Update: Partial<Database["public"]["Tables"]["kpi_manual"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: { [_ in never]: never };
     Functions: {

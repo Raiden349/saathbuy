@@ -47,3 +47,10 @@
 - Free-fee credits are shown as a plain count. WhatsApp sharing is available for open deals and includes the current group price and the signed-in user's referral ID.
 - Request a deal uses a single-column form and a divided product list sorted by vote count; voting uses a plain count and action button.
 - No decorative cards, gradients, shadows, or extra animation were added.
+
+## Admin tools
+
+- Review: `design-review/admin-375.png` and `design-review/admin-deal-form-375.png` at 375x812.
+- The KPI dashboard presents label/value rows rather than tiles. The deal editor keeps fields in one column on mobile and uses the required 48 px controls.
+- Deal lists, joiners, and requested products use mint-tint table headers or divided rows with thin token borders.
+- No decorative cards, gradients, shadows, or extra animation were added.

@@ -40,3 +40,9 @@
 - Keep rewards, streak, and free-fee credit balances sourced from the existing protected profile and points ledger data; the join RPC remains authoritative for credit use and streak updates.
 - Build referral URLs from the configured site origin and the signed-in user's ID. Count referred joins with the server-only service role, filtering by the authenticated user's ID and the current deal.
 - Let authenticated students create product requests and toggle their own votes under the existing row-level security policies; calculate and sort vote totals on the server.
+
+## Phase 8
+
+- Keep deal creation and edits behind the existing admin row-level security policies and validate all submitted fields with Zod. The server builds tiers and prices; the browser never submits derived totals.
+- Store wholesale cost in the restricted `deal_costs` table and keep the existing deal slug stable when an admin edits a title.
+- Calculate activity metrics from deal and join rows. Store only the two manually entered counts in a single admin-only `kpi_manual` row.
