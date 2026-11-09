@@ -1,10 +1,24 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+
+const MOBILE_LAYOUT = "(max-width: 767px)";
+
+function subscribeToLayout(onChange: () => void) {
+  const media = window.matchMedia(MOBILE_LAYOUT);
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+}
+
+function getIsMobileLayout() {
+  return window.matchMedia(MOBILE_LAYOUT).matches;
+}
 
 export function StartupLoadingScreen() {
   const [visible, setVisible] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const isMobileLayout = useSyncExternalStore(subscribeToLayout, getIsMobileLayout, () => false);
+  const videoSource = isMobileLayout ? "/brand/mobile-startup-loading.mp4" : "/brand/startup-loading.mp4";
 
   useEffect(() => {
     const fallback = window.setTimeout(() => setVisible(false), 20_000);
@@ -28,7 +42,7 @@ export function StartupLoadingScreen() {
         muted
         playsInline
         preload="auto"
-        src="/brand/startup-loading.mp4"
+        src={videoSource}
       />
       <video
         aria-hidden="true"
@@ -40,7 +54,7 @@ export function StartupLoadingScreen() {
         playsInline
         preload="auto"
         ref={videoRef}
-        src="/brand/startup-loading.mp4"
+        src={videoSource}
       />
       <span className="startup-loading-sr-only">Loading SaathBuy</span>
     </div>
