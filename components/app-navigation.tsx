@@ -9,32 +9,34 @@ const tabs = [
   { label: "Pickups", href: "/pickup", icon: PackageCheck },
   { label: "Rewards", href: "/rewards", icon: Gift },
   { label: "Request", href: "/request", icon: Sparkles },
+  { label: "Account", href: "/login", icon: UserRound },
 ] as const;
 
 function isActive(pathname: string, href: string) {
   return href === "/" ? pathname === "/" || pathname.startsWith("/deals/") : pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function AppNavigation() {
+export function DesktopNavigation() {
   const pathname = usePathname();
   return (
-    <>
-      <nav aria-label="Main navigation" className="desktop-nav">
-        {tabs.map(({ href, label }) => (
-          <Link aria-current={isActive(pathname, href) ? "page" : undefined} className="desktop-nav-link" href={href} key={href}>{label}</Link>
-        ))}
-      </nav>
-      <nav className="bottom-nav" aria-label="Main navigation">
-        {tabs.map(({ label, href, icon: Icon }) => (
-          <Link className="nav-link" href={href} key={label} aria-current={isActive(pathname, href) ? "page" : undefined}>
-            <Icon aria-hidden="true" size={20} strokeWidth={1.75} />
-            <span>{label}</span>
-          </Link>
-        ))}
-        <Link className="nav-link nav-account-link" href="/login" aria-current={pathname.startsWith("/login") || pathname.startsWith("/signup") ? "page" : undefined}>
-          <UserRound aria-hidden="true" size={20} strokeWidth={1.75} /><span>Account</span>
+    <nav aria-label="Main navigation" className="desktop-nav">
+      {tabs.map(({ href, label }) => (
+        <Link aria-current={isActive(pathname, href) || (label === "Account" && (pathname.startsWith("/login") || pathname.startsWith("/signup"))) ? "page" : undefined} className="desktop-nav-link" href={href} key={href}>{label}</Link>
+      ))}
+    </nav>
+  );
+}
+
+export function BottomNavigation() {
+  const pathname = usePathname();
+  return (
+    <nav className="bottom-nav" aria-label="Main navigation">
+      {tabs.map(({ label, href, icon: Icon }) => (
+        <Link className="nav-link" href={href} key={label} aria-current={isActive(pathname, href) || (label === "Account" && (pathname.startsWith("/login") || pathname.startsWith("/signup"))) ? "page" : undefined}>
+          <Icon aria-hidden="true" size={20} strokeWidth={1.75} />
+          <span>{label}</span>
         </Link>
-      </nav>
-    </>
+      ))}
+    </nav>
   );
 }

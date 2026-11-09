@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { signOutAction } from "@/app/actions/auth";
-import { AppNavigation } from "@/components/app-navigation";
+import { BottomNavigation, DesktopNavigation } from "@/components/app-navigation";
 
 function initials(fullName: string, email: string) {
   const letters = fullName.trim().split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]);
@@ -60,10 +60,11 @@ export async function AppShell({ children }: Readonly<{ children: React.ReactNod
           <Image src="/brand/logo-mark.png" alt="" width={30} height={30} priority />
           <Image src="/brand/logo-wordmark.png" alt="SaathBuy" width={104} height={20} priority />
         </Link>
-        <AppNavigation />
+        <DesktopNavigation />
         <AccountArea />
       </header>
       {children}
+      <BottomNavigation />
     </div>
   );
 }

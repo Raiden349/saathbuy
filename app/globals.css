@@ -305,7 +305,7 @@ a { transition: color 160ms ease, background-color 160ms ease, border-color 160m
 .desktop-nav { display: none; }
 .desktop-nav-link { display: inline-flex; min-height: 40px; align-items: center; border-radius: 999px; padding: 0 16px; color: var(--color-ink-soft); font-size: 14px; font-weight: 600; text-decoration: none; }
 .desktop-nav-link:hover, .desktop-nav-link[aria-current="page"] { background: #10343c; color: #86e1e7; }
-.bottom-nav { right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); left: 12px; width: auto; min-height: 66px; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; border: 1px solid #29404b; border-radius: 24px; background: rgba(11, 25, 36, .96); padding: 6px 8px; box-shadow: 0 16px 36px -6px #000b; backdrop-filter: blur(14px); }
+.bottom-nav { position: fixed !important; inset-block-start: auto !important; inset-block-end: calc(env(safe-area-inset-bottom, 0px) + 12px) !important; right: 12px; left: 12px; width: auto; min-height: 66px; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; border: 1px solid #29404b; border-radius: 24px; background: rgba(11, 25, 36, .96); padding: 6px 8px; box-shadow: 0 16px 36px -6px #000b; backdrop-filter: blur(14px); }
 .nav-link { min-height: 48px; border-radius: 999px; color: #9fb1bb; font-size: 11px; }
 .nav-link[aria-current="page"] { background: #06454f; color: #84e3e8; }
 .home-main, .pickup-main, .rewards-main, .request-main { max-width: 1240px; padding-top: 32px; }
@@ -438,7 +438,7 @@ a { transition: color 160ms ease, background-color 160ms ease, border-color 160m
   .deal-list-row .slot-row { grid-column: auto; }
 }
 @media (min-width: 768px) and (max-width: 899px) {
-  .bottom-nav { right: 50%; bottom: 16px; left: auto; width: min(520px, calc(100% - 32px)); transform: translateX(50%); }
+  .bottom-nav { inset-block-end: 16px !important; right: 50%; left: auto; width: min(520px, calc(100% - 32px)); transform: translateX(50%); }
   .detail-sticky-action { right: auto; bottom: 88px; left: 50%; width: min(680px, calc(100% - 32px)); transform: translateX(-50%); }
 }
 @media (min-width: 900px) {

@@ -28,7 +28,7 @@ export default async function HomePage() {
   return (
     <main className="home-main">
       <p className="eyebrow">SaathBuy campus pools</p>
-      <div className="home-heading-row"><div><h1 className="home-title">Better prices, together.</h1><p className="home-subtitle">Join a campus deal with other students. As more people join, the group price can drop.</p></div><Link className="home-request-link" href="/request">Request a deal <span aria-hidden="true">↗</span></Link></div>
+      <div className="home-heading-row"><div><h1 className="home-title">Buy together, Save together</h1><p className="home-subtitle">Join a campus deal with other students. As more people join, the group price can drop.</p></div><Link className="home-request-link" href="/request">Request a deal <span aria-hidden="true">↗</span></Link></div>
       <EnableDealAlerts signedIn={signedIn} />
       {deals === null
         ? <p className="empty-state">Deals could not load right now. Refresh the page.</p>
